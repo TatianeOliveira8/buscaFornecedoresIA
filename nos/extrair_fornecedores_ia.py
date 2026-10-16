@@ -6,6 +6,7 @@ from typing import Dict, Any, List
 from html import unescape
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai.chat_models import ChatGoogleGenerativeAIError
 from estado import EstadoReposicao
 
 load_dotenv()
@@ -98,11 +99,11 @@ justificativa (uma frase baseada nas evidências).
             "precisa_pesquisa_adicional": bool(dados.get("precisa_pesquisa_adicional")),
             "justificativa": str(dados.get("justificativa", "Evidência insuficiente.")),
         }
-    except (ValueError, TypeError, json.JSONDecodeError):
+    except (ChatGoogleGenerativeAIError, ValueError, TypeError, json.JSONDecodeError) as e:
         return {
             "compatibilidade": "nao_confirmada",
             "precisa_pesquisa_adicional": True,
-            "justificativa": "A análise estruturada não foi confirmada.",
+            "justificativa": f"A análise estruturada não foi confirmada: {e}",
         }
 
 
